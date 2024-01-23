@@ -16,8 +16,11 @@ const Signin = () => {
 
   const handleLoginStatusCheck = async () => {
     try {
-      await axios.get('http://localhost:3001/users/check-login');
-      setIsLoggedIn(true);
+      const response = await axios.get('http://localhost:3001/users/check-login');
+      setIsLoggedIn(response.data.isLoggedIn);
+      if(isLoggedIn){
+        navigate('/document-directory');
+      }
     } catch (error) {
       setIsLoggedIn(false);
       console.error('Error checking login status:', error);
@@ -33,9 +36,9 @@ const Signin = () => {
     // }
   };
   
-  // useEffect(() => {
-  //   handleLoginStatusCheck();
-  // }, [isLoggedIn]);
+  useEffect(() => {
+    handleLoginStatusCheck();
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();

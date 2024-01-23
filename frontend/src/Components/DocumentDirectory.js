@@ -76,7 +76,8 @@ const DocumentDirectory = () => {
         await fetchDocuments();
       } else {
         // Redirect to login page if not logged in
-        navigate('/signin');
+        //navigate('/signin');
+        console.log("tumse chudda hu", isLoggedIn);
       }
     };
 
@@ -91,7 +92,7 @@ const DocumentDirectory = () => {
   return (
     <div>
       <h2 style={{ textAlign: 'center', fontSize: '30px', paddingBottom: '20px', paddingTop: '20px' }}>Document Directory</h2>
-      <button type="button" onClick={handleLogout} style={{ paddingLeft: '10px' }}>
+      <button type="button" onChildButtonClick={() => setIsLoggedIn(false)} onClick={handleLogout} style={{ paddingLeft: '10px' }}>
         Log Out
       </button>
       <div style={{ textAlign: 'center', paddingBottom: '20px', paddingTop: '20px' }}>

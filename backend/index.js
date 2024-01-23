@@ -47,9 +47,8 @@ console.log('Generated secret key:', secretKey);
 app.use(
     session({
       secret: secretKey, // Secret key for session encryption
-      // secret:'secret',
       resave: false,
-      saveUninitialized: true,
+      saveUninitialized: false,
       cookie: {
         secure: false,
         maxAge: 1000 * 60 * 60 * 24, // Session duration in milliseconds (1 day)

@@ -6,13 +6,13 @@ const { Document } = require('../Models/documentModel');
 // Create a new document
 router.post('/create', async (req, res) => {
     console.log('Handling create document request...');
-    console.log('User session:', req.session.user);
+    console.log('User session:', req.session.userId);
     try {
-        if (!req.session || !req.session.user) {
+        if (!req.session.userId) {
             return res.status(401).json({ message: 'Unauthorized' });
         }
 
-        const createdBy = req.session.user.id;
+        const createdBy = req.session.userId;
 
         // Extract document details from the request body
         const { title, content } = req.body;
@@ -37,11 +37,11 @@ router.post('/create', async (req, res) => {
 router.get('/all', async (req, res) => {
     try {
         // Check if user is logged in
-        if (!req.session.user || !req.session.user.id) {
+        if (!req.session.userId) {
             return res.status(401).json({ error: 'Unauthorized' });
         }
 
-        const createdBy = req.session.user.id;
+        const createdBy = req.session.userId;
         const documents = await Document.find({ createdBy });
 
         res.status(200).json({ documents });

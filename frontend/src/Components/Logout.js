@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const Logout = () => {
+const Logout = (props) => {
   const navigate = useNavigate();
 
   axios.defaults.withCredentials = true;
@@ -14,6 +14,7 @@ const Logout = () => {
   
       // Clear user data from local storage
       localStorage.removeItem('user');
+      props.onChildButtonClick();
   
       // Redirect to the login page after logout
       navigate('/signin');

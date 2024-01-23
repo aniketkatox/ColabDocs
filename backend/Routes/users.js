@@ -51,8 +51,7 @@ router.post('/signin', async (req, res) => {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
-
-    if (!user) {
+    if (!user || typeof user !== 'object') {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
 
@@ -69,7 +68,7 @@ router.post('/signin', async (req, res) => {
     //   email: user.email,
     // };
 
-    req.session.id = user._id.toString();
+    req.session.userId = user._id.toString();
     req.session.isLoggedIn = true;
     req.session.email = email;
 
@@ -113,13 +112,12 @@ router.get('/check-login', async (req, res) => {
     console.log("ffffff", req.session.email)
     console.log("faaafff", req.session.id)
 
-    if (req.session.isLoggedIn) {
+    if (req.session.userId) {
       console.log("heheheheh")
-      const user = await User.findById(req.session.id);
+      const user = await User.findById({ _id: req.session.userId });
       console.log("userrrr",user)
       if (user) {
         // User is logged in
-        console("yes yes im logged in");
         return res.status(200).json({ isLoggedIn: true, user: user });
       }
     }
