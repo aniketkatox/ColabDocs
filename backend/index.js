@@ -48,7 +48,7 @@ app.use(
     session({
       secret: secretKey, // Secret key for session encryption
       resave: false,
-      saveUninitialized: false,
+      saveUninitialized: true,
       cookie: {
         secure: false,
         maxAge: 1000 * 60 * 60 * 24, // Session duration in milliseconds (1 day)

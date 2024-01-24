@@ -110,7 +110,7 @@ router.get('/check-login', async (req, res) => {
     console.log(" hiiiiiiiii")
     // console.log("ffffff", req.session.user)
     console.log("ffffff", req.session.email)
-    console.log("faaafff", req.session.id)
+    console.log("faaafff", req.session.userId)
 
     if (req.session.userId) {
       console.log("heheheheh")
