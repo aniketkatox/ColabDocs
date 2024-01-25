@@ -107,24 +107,13 @@ router.post('/logout', (req, res) => {
 // Check login status
 router.get('/check-login', async (req, res) => {
   try {
-    console.log(" hiiiiiiiii")
-    // console.log("ffffff", req.session.user)
-    console.log("ffffff", req.session.email)
-    console.log("faaafff", req.session.userId)
-
     if (req.session.userId) {
-      console.log("heheheheh")
       const user = await User.findById({ _id: req.session.userId });
-      console.log("userrrr",user)
       if (user) {
-        // User is logged in
         return res.status(200).json({ isLoggedIn: true, user: user });
       }
     }
-
-    console.log('im not logged in');
-    // User is not logged in
-    return res.status(200).json({ isLoggedIn: false });
+    return res.status(403).json({ isLoggedIn: false });
   } catch (error) {
     console.error('Error checking login status:', error);
     res.status(500).json({ error: 'Internal Server Error' });

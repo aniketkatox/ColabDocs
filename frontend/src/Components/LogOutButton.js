@@ -1,12 +1,13 @@
 import axios from 'axios';
 
-export default function LogOutButton({ backendURI, setIsLoggedIn}) {
+function LogOutButton({ backendURI, changeIsLoggedIn}) {
     
     async function logOut(){
         try {
-            await axios.post(backendURI + '/users/logout').then(response => {
+            await axios.post(backendURI + '/users/logout', {}, { withCredentials: true })
+            .then(response => {
                 if (response.status === 200) {
-                    clearLoginState();
+                    changeIsLoggedIn(false);
                 }else{
                     alert("SignOut Failed, Please try again!");
                 }
@@ -18,11 +19,9 @@ export default function LogOutButton({ backendURI, setIsLoggedIn}) {
         }
     }
 
-    function clearLoginState(){
-        setIsLoggedIn(false);
-    }
-
     return(
         <button onClick={ logOut } >LogOut</button>
     )
 }
+
+export default LogOutButton;

@@ -20,8 +20,16 @@ export default function Main() {
 
     async function checkLogin(){
         try {
-            await axios.get( backendURI + '/users/check-login', {withCredentials: true});
-            setIsLoggedIn(true);
+            await axios.get( backendURI + '/users/check-login', {withCredentials: true})
+            .then(response => {
+                if (response.status === 200) {
+                    changeIsLoggedIn(true);
+                }else{
+                    changeIsLoggedIn(false);
+                }
+            }).catch(error => {
+                console.error('Error:', error);
+            });
         } catch (error) {
             setIsLoggedIn(false);
             console.error('Error checking login status:', error);
@@ -36,7 +44,7 @@ export default function Main() {
         return(
             <div id="main">
                 <h1>Hello logged In!</h1>
-                <LogOutButton backendURI = { backendURI } setIsLoggedIn = { setIsLoggedIn }></LogOutButton>
+                <LogOutButton backendURI = { backendURI } changeIsLoggedIn = { changeIsLoggedIn }></LogOutButton>
             </div>
         )
     }else if(showSignUpForm){
