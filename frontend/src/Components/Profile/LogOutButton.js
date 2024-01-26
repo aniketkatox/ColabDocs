@@ -1,13 +1,13 @@
 import axios from 'axios';
 
-function LogOutButton({ backendURI, changeIsLoggedIn}) {
+function LogOutButton({ props}) {
     
     async function logOut(){
         try {
-            await axios.post(backendURI + '/users/logout', {}, { withCredentials: true })
+            await axios.post(props.backendURI + '/users/logout', {}, { withCredentials: true })
             .then(response => {
                 if (response.status === 200) {
-                    changeIsLoggedIn(false);
+                    props.changeIsLoggedIn(false);
                 }else{
                     alert("SignOut Failed, Please try again!");
                 }

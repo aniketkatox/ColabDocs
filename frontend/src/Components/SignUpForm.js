@@ -14,12 +14,13 @@ function SignUpForm({ changeShowSignUpForm, backendURI }){
         try {
             const response = await axios.post(backendURI + '/users/signup', formData).then(response => {
                 if (response.status === 201) {
-                    alert("SignUp Success, Please login!");
+                    alert(response.data.message);
                     changeShowSignUpForm(false);
                 }else{
-                    alert("SignUp Failed, Please try again!");
+                    alert(response.data.message);
                 }
             }).catch(error => {
+                alert(error.response.data.message);
                 console.error('Error:', error);
             });
         } catch (error) {

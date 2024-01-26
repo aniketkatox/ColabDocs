@@ -1,57 +1,102 @@
 const express = require('express');
 const router = express.Router();
 const { Document } = require('../Models/documentModel');
+const { User, userValidation } = require('../Models/userModel');
+const { v4: uuidv4 } = require('uuid');
 
+function generateGUID() {
+    return uuidv4();
+}
 
-// Create a new document
 router.post('/create', async (req, res) => {
-    console.log('Handling create document request...');
-    console.log('User session:', req.session.userId);
+    try {
+        if (!req.session.userId) {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
+        const email = req.session.email;
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            res.status(400).json({ message: 'User not found!' });
+        }
+
+        const { title, content } = req.body;
+
+        const newDocument = new Document({
+            title,
+            content,
+            documentId : generateGUID()
+        });
+
+        user.documents.push(newDocument.documentId);
+
+        await newDocument.save();
+        await user.save();
+
+        res.status(201).json({ message: 'Document created successfully!', document: newDocument.documentId });
+    } catch (error) {
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
+router.post('/addOwner', async (req, res) => {
     try {
         if (!req.session.userId) {
             return res.status(401).json({ message: 'Unauthorized' });
         }
 
-        const createdBy = req.session.userId;
+        const email = req.session.email;
+        const user = await User.findOne({ email });
 
-        // Extract document details from the request body
-        const { title, content } = req.body;
+        if (!user) {
+            res.status(400).json({ message: 'User not found!' });
+        }
 
-        // Create a new document
-        const newDocument = new Document({
-            title,
-            content,
-            createdBy,
-        });
+        const { newUserEmail, documentId } = req.body;
 
-        await newDocument.save();
+        console.log(newUserEmail);
+        const newUser = await User.findOne({ email : newUserEmail });
 
-        res.status(201).json({ message: 'Document created successfully!', document: newDocument });
+        newUser.documents.push(documentId);
+
+        await newUser.save();
+
+        res.status(201).json({ message: newUserEmail + ' added to the owners!' });
+
     } catch (error) {
-        console.error('Error creating document:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        console.log(error);
+        res.status(500).json({ message: 'Internal Server Error' });
     }
 });
 
-// Get all documents for the current user
-router.get('/all', async (req, res) => {
+router.get('/myDocuments', async (req, res) => {
     try {
-        // Check if user is logged in
         if (!req.session.userId) {
             return res.status(401).json({ error: 'Unauthorized' });
         }
 
-        const createdBy = req.session.userId;
-        const documents = await Document.find({ createdBy });
+        const email = req.session.email;
+        const user = await User.findOne({ email });
 
-        res.status(200).json({ documents });
+        if (!user) {
+            res.status(400).json({ message: 'User not found!' });
+        }
+        
+        var documents = user.documents;
+        var foundDocuments = await Document.find({ documentId: { $in: documents } })
+        .then((foundDocuments) => {
+            return foundDocuments;
+        })
+        .catch((error) => {
+            res.status(500).json({ foundDocuments });
+        });
+
+        res.status(200).json({ foundDocuments });
     } catch (error) {
-        console.error('Error fetching documents:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).json({ message: 'Internal Server Error' });
     }
 });
 
-// to get document by document id
 router.get('/:documentId', async (req, res) => {
     try {
         const document = await Document.findById(req.params.documentId);

@@ -126,7 +126,6 @@ const DocumentDirectory = () => {
           <li
             style={{ cursor: 'pointer', paddingBottom: '20px' }}
             key={document._id}
-            onClick={() => handleDocumentClick(document._id)}
           >
             {document.title}
           </li>

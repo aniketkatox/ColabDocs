@@ -3,8 +3,9 @@ import React, { useState } from 'react';
 import SignUpForm from "./SignUpForm";
 import axios from 'axios';
 import { useEffect } from 'react';
-import LogOutButton from "./LogOutButton";
-import Documents from "./Document/Documents";
+import LogOutButton from "./Profile/LogOutButton";
+import Documents from "./Profile/DocumentDirectory/Documents";
+import Profile from "./Profile/Profile";
 
 export default function Main() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -41,11 +42,15 @@ export default function Main() {
         checkLogin();
     }, []);
 
+    var props = {
+        backendURI,
+        changeIsLoggedIn
+    }
+
     if(isLoggedIn){
         return(
             <div id="main">
-                <Documents backendURI = { backendURI }></Documents>
-                <LogOutButton backendURI = { backendURI } changeIsLoggedIn = { changeIsLoggedIn }></LogOutButton>
+                <Profile props = { props }/>
             </div>
         )
     }else if(showSignUpForm){

@@ -7,45 +7,37 @@ const { User, userValidation } = require('../Models/userModel')
 const app = express()
 
 
-// Signup endpoint
 router.post('/signup', async (req, res) => {
-  try {
-    // Validate user input using Joi
-    const { error } = userValidation.validate(req.body);
+	try {
+		const { error } = userValidation.validate(req.body);
+		if (error) {
+			return res.status(400).json({ message: error.details[0].message });
+		}
 
-    if (error) {
-      // Return validation error response
-      return res.status(400).json({ error: error.details[0].message });
-    }
+		const { username, email, password } = req.body;
+		const existingUser = await User.findOne({ email });
+		
+		if (existingUser) {
+			return res.status(400).json({ message: 'User with this email already exists' });
+		}
 
-    const { username, email, password } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
+		const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = new User({
-      username,
-      email,
-      password: hashedPassword,
-    });
+		const newUser = new User({
+			username,
+			email,
+			password: hashedPassword
+		});
 
-    await newUser.save();
+		await newUser.save();
+		res.status(201).json({ message: 'User registered successfully!'});
 
-    // Store user information in the session
-    // req.session.user = {
-    //   id: newUser._id,
-    //   username: newUser.username,
-    //   email: newUser.email,
-    // };
-
-    // res.status(201).json({ message: 'User registered successfully!', user: req.session.user });
-    res.status(201).json({ message: 'User registered successfully!'});
-  } catch (error) {
-    console.error('Error registering user:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
+	} catch (error) {
+		console.error('Error registering user:', error);
+		res.status(500).json({ message: 'Internal Server Error' });
+	}
 });
 
-
-// Signin endpoint
 router.post('/signin', async (req, res) => {
   try {
     const { email, password } = req.body;

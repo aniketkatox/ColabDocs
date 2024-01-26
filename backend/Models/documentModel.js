@@ -4,13 +4,9 @@ const mongoose = require('mongoose')
 const documentSchema = new mongoose.Schema({
     title: String,
     content: String,
-    createdBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-    },
+    documentId: String
 });
 
 //Model for Documents
 const Document = mongoose.model('Document', documentSchema);
-
 exports.Document = Document;
