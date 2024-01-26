@@ -1,5 +1,6 @@
 import CurrentDocument from "./CurrentDocument";
 import OwnerShipManager from "./OwnerShipManager";
+import AccessManager from "./AccessManager";
 
 function DocumentViewer({ props }){
 
@@ -12,14 +13,17 @@ function DocumentViewer({ props }){
         documentId : props.document.documentId
     }
 
+    var accessManagerProp = {
+        backendURI : props.backendURI,
+        documentId : props.document.documentId
+    }
+
     return(
         <div id="documentViewer">
             <OwnerShipManager props = { ownerShipManagerProp }/>
-            <div id="accessManager">
-                <field>email</field>
-                <radio>R/W</radio>
-                <button>Button</button>
-            </div>
+
+            <AccessManager props = { accessManagerProp } />
+
             <CurrentDocument props = { currentDocumentProp }/>
             <div id="documentCloser">
                 <p onClick={() => props.setCurrDocument(null) }>X</p>

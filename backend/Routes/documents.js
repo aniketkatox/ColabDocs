@@ -25,7 +25,7 @@ router.post('/create', async (req, res) => {
         const newDocument = new Document({
             title,
             content,
-            documentId : generateGUID()
+            documentId: generateGUID()
         });
 
         user.documents.push(newDocument.documentId);
@@ -55,7 +55,7 @@ router.post('/addOwner', async (req, res) => {
         const { newUserEmail, documentId } = req.body;
 
         console.log(newUserEmail);
-        const newUser = await User.findOne({ email : newUserEmail });
+        const newUser = await User.findOne({ email: newUserEmail });
 
         newUser.documents.push(documentId);
 
@@ -69,6 +69,40 @@ router.post('/addOwner', async (req, res) => {
     }
 });
 
+router.post('/giveAccess', async (req, res) => {
+    try {
+        if (!req.session.userId) {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
+
+        const email = req.session.email;
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            res.status(400).json({ message: 'User not found!' });
+        }
+
+        const { newUserEmail, documentId, access } = req.body;
+
+        console.log(newUserEmail);
+        console.log(access);
+        const newUser = await User.findOne({ email: newUserEmail });
+
+        const sharedDocument = {
+            documentId,
+            access
+        };
+
+        newUser.sharedDocuments.push(sharedDocument);
+        await newUser.save();
+
+        res.status(201).json({ message: newUserEmail + ' Access given !' });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+})
+
 router.get('/myDocuments', async (req, res) => {
     try {
         if (!req.session.userId) {
@@ -81,21 +115,39 @@ router.get('/myDocuments', async (req, res) => {
         if (!user) {
             res.status(400).json({ message: 'User not found!' });
         }
-        
+
         var documents = user.documents;
         var foundDocuments = await Document.find({ documentId: { $in: documents } })
-        .then((foundDocuments) => {
-            return foundDocuments;
-        })
-        .catch((error) => {
-            res.status(500).json({ foundDocuments });
-        });
+            .then((foundDocuments) => {
+                return foundDocuments;
+            })
+            .catch((error) => {
+                res.status(500).json({ foundDocuments });
+            });
 
         res.status(200).json({ foundDocuments });
     } catch (error) {
         res.status(500).json({ message: 'Internal Server Error' });
     }
 });
+
+router.get('/sharedDocuments', async (req, res) => {
+    try {
+        if (!req.session.userId) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+
+        const email = req.session.email;
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            res.status(400).json({ message: 'User not found!' });
+        }
+
+    } catch (error) {
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+})
 
 router.get('/:documentId', async (req, res) => {
     try {

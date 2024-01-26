@@ -53,13 +53,6 @@ router.post('/signin', async (req, res) => {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
 
-    // Store user information in the session upon successful login
-    // req.session.user = {
-    //   id: user._id,
-    //   username: user.username,
-    //   email: user.email,
-    // };
-
     req.session.userId = user._id.toString();
     req.session.isLoggedIn = true;
     req.session.email = email;

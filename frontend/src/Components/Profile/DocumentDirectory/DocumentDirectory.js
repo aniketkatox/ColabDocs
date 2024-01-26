@@ -2,6 +2,7 @@ import CreateDocument from "./CreateDocument";
 import CurrentDocument from "./CurrentDocument";
 import DocumentViewer from "./DocumentViewer";
 import MyDocuments from "./MyDocuments";
+import SharedDocuments from "./SharedDocuments";
 import React, { useState, useEffect } from 'react';
 
 function DocumentDirectory({ props }) {
@@ -30,6 +31,11 @@ function DocumentDirectory({ props }) {
         setCurrDocument
     }
 
+    var sharedDocumentsProp = {
+        backendURI : props.backendURI,
+        trigger
+    }
+
     if(currDocument != null){
         return(
             <DocumentViewer props={ documentViewerProp }/>
@@ -39,6 +45,7 @@ function DocumentDirectory({ props }) {
             <div id="documentDirectory">
                 <CreateDocument props = { createDocumentProp }/>
                 <MyDocuments props = { myDocumentsProp }/>
+                <SharedDocuments props = { sharedDocumentsProp }/>
             </div>
         );
     }
