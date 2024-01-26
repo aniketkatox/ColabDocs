@@ -11,14 +11,14 @@ router.post('/signup', async (req, res) => {
 	try {
 		const { error } = userValidation.validate(req.body);
 		if (error) {
-			return res.status(400).json({ message: error.details[0].message });
+			res.status(400).json({ message: error.details[0].message });
 		}
 
 		const { username, email, password } = req.body;
 		const existingUser = await User.findOne({ email });
 		
 		if (existingUser) {
-			return res.status(400).json({ message: 'User with this email already exists' });
+			res.status(400).json({ message: 'User with this email already exists' });
 		}
 
 		const hashedPassword = await bcrypt.hash(password, 10);
@@ -44,13 +44,13 @@ router.post('/signin', async (req, res) => {
 
     const user = await User.findOne({ email });
     if (!user || typeof user !== 'object') {
-      return res.status(401).json({ message: 'Invalid email or password' });
+      res.status(401).json({ message: 'Invalid email or password' });
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
-      return res.status(401).json({ message: 'Invalid email or password' });
+      res.status(401).json({ message: 'Invalid email or password' });
     }
 
     req.session.userId = user._id.toString();
@@ -77,7 +77,7 @@ router.post('/logout', (req, res) => {
     req.session.destroy((err) => {
       if (err) {
         console.error('Error destroying session:', err);
-        return res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).json({ error: 'Internal Server Error' });
       }
 
       // Respond with a success message
@@ -95,10 +95,10 @@ router.get('/check-login', async (req, res) => {
     if (req.session.userId) {
       const user = await User.findById({ _id: req.session.userId });
       if (user) {
-        return res.status(200).json({ isLoggedIn: true, user: user });
+        res.status(200).json({ isLoggedIn: true, user: user });
       }
     }
-    return res.status(403).json({ isLoggedIn: false });
+    res.status(403).json({ isLoggedIn: false });
   } catch (error) {
     console.error('Error checking login status:', error);
     res.status(500).json({ error: 'Internal Server Error' });

@@ -7,7 +7,7 @@ function AccessManager({ props }) {
     var documentId = props.documentId;
 
     const [email, setEmail] = useState('');
-    const [access, setAccess] = useState('');
+    const [access, setAccess] = useState(0);
 
     async function giveAccess() {
         try {
@@ -53,7 +53,8 @@ function AccessManager({ props }) {
                         type="radio"
                         name="access"
                         value="read"
-                        onChange={(e) => setAccess('read')}
+                        onChange={(e) => setAccess(0)}
+                        defaultChecked
                     />
                     Read
                 </label>
@@ -63,12 +64,12 @@ function AccessManager({ props }) {
                         type="radio"
                         name="access"
                         value="write"
-                        onChange={(e) => setAccess('write')}
+                        onChange={(e) => setAccess(1)}
                     />
                     Write
                 </label>
 
-                <button type="button" onClick={giveAccess}>
+                <button type="button" onClick={ giveAccess }>
                     Give Access
                 </button>
             </form>

@@ -33,7 +33,7 @@ function DocumentDirectory({ props }) {
 
     var sharedDocumentsProp = {
         backendURI : props.backendURI,
-        trigger
+        setCurrDocument
     }
 
     if(currDocument != null){

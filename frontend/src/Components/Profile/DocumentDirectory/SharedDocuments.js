@@ -3,15 +3,11 @@ import React, { useState, useEffect } from 'react';
 
 function SharedDocuments({ props }){
     const backendURI = props.backendURI;
-    const [sharedDocument, setSharedDocument] = useState({
-        documentId: '',
-        read: false,
-        write: false,
-    });
+    const [sharedDocument, setSharedDocument] = useState([]);
 
     useEffect(() => {
         loadDocuments();
-    }, [props.trigger]);
+    }, []);
 
     function openDocument(document){
         props.setCurrDocument(document);
@@ -21,7 +17,7 @@ function SharedDocuments({ props }){
         try{
             await axios.get(backendURI + '/documents/sharedDocuments', { withCredentials: true }).then(response => {
                 if (response.status === 200) {
-                    setDocuments(response.data.foundDocuments);
+                    setSharedDocument(response.data.sharedDocumentArrayWithPermission);
                 }else{
                     alert(response.data.message);
                 }
@@ -38,7 +34,7 @@ function SharedDocuments({ props }){
             <h2>Shared Documents</h2>
             <ul>
                 {sharedDocument.map((document) => (
-                    <div className="documentListItem" key={document._id}>
+                    <div className="sharedDocumentListItem" key={document._id}>
                         <li onClick={ () => openDocument(document) }>
                             {document.title}
                         </li>

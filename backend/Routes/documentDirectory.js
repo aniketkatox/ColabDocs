@@ -19,7 +19,7 @@ router.get('/document-directory', isLoggedInMiddleware, async (req, res) => {
     try {
         // Check if user is logged in
         if (!req.session.user || !req.session.user.id) {
-            return res.status(401).json({ error: 'Unauthorized' });
+            res.status(401).json({ error: 'Unauthorized' });
         }
 
         const createdBy = req.session.user.id;

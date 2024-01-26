@@ -1,9 +1,9 @@
 const Joi = require('joi')
 const mongoose = require('mongoose')
 
-var sharedPermission = {
+var sharedDocument = {
     documentId : String,
-    access : String
+    access : Boolean
 }
 
 //Schema
@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
     email: String,
     password: String,
     documents: [String],
-    sharedDocuments : [sharedPermission]
+    sharedDocuments : [sharedDocument]
 });
   
 //Model

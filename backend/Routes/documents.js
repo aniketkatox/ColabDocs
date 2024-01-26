@@ -11,7 +11,7 @@ function generateGUID() {
 router.post('/create', async (req, res) => {
     try {
         if (!req.session.userId) {
-            return res.status(401).json({ message: 'Unauthorized' });
+            res.status(401).json({ message: 'Unauthorized' });
         }
         const email = req.session.email;
         const user = await User.findOne({ email });
@@ -42,7 +42,7 @@ router.post('/create', async (req, res) => {
 router.post('/addOwner', async (req, res) => {
     try {
         if (!req.session.userId) {
-            return res.status(401).json({ message: 'Unauthorized' });
+            res.status(401).json({ message: 'Unauthorized' });
         }
 
         const email = req.session.email;
@@ -53,6 +53,10 @@ router.post('/addOwner', async (req, res) => {
         }
 
         const { newUserEmail, documentId } = req.body;
+
+        if(newUserEmail === email){
+            res.status(400).json({ message: 'You already have this doc!' });
+        }
 
         console.log(newUserEmail);
         const newUser = await User.findOne({ email: newUserEmail });
@@ -72,7 +76,7 @@ router.post('/addOwner', async (req, res) => {
 router.post('/giveAccess', async (req, res) => {
     try {
         if (!req.session.userId) {
-            return res.status(401).json({ message: 'Unauthorized' });
+            res.status(401).json({ message: 'Unauthorized' });
         }
 
         const email = req.session.email;
@@ -84,8 +88,11 @@ router.post('/giveAccess', async (req, res) => {
 
         const { newUserEmail, documentId, access } = req.body;
 
-        console.log(newUserEmail);
-        console.log(access);
+        if(newUserEmail === email){
+            res.status(400).json({ message: 'You already have this doc!' });
+            return;
+        }
+
         const newUser = await User.findOne({ email: newUserEmail });
 
         const sharedDocument = {
@@ -98,15 +105,14 @@ router.post('/giveAccess', async (req, res) => {
 
         res.status(201).json({ message: newUserEmail + ' Access given !' });
     } catch (error) {
-        console.log(error);
         res.status(500).json({ message: 'Internal Server Error' });
     }
-})
+});
 
 router.get('/myDocuments', async (req, res) => {
     try {
         if (!req.session.userId) {
-            return res.status(401).json({ error: 'Unauthorized' });
+            res.status(401).json({ error: 'Unauthorized' });
         }
 
         const email = req.session.email;
@@ -134,7 +140,7 @@ router.get('/myDocuments', async (req, res) => {
 router.get('/sharedDocuments', async (req, res) => {
     try {
         if (!req.session.userId) {
-            return res.status(401).json({ error: 'Unauthorized' });
+            res.status(401).json({ error: 'Unauthorized' });
         }
 
         const email = req.session.email;
@@ -144,7 +150,31 @@ router.get('/sharedDocuments', async (req, res) => {
             res.status(400).json({ message: 'User not found!' });
         }
 
+        const sharedDocumentsIds = user.sharedDocuments.map(document => document.documentId);
+
+        var foundDocuments = await Document.find({ documentId: { $in: sharedDocumentsIds } })
+        .then((foundDocuments) => {
+            return foundDocuments;
+        })
+        .catch((error) => {
+            res.status(500).json({ foundDocuments });
+        });
+
+        const sharedDocumentArrayWithPermission = foundDocuments.map(foundDoc => {
+            const docPermissionObj = user.sharedDocuments.find(sharedDoc => sharedDoc.documentId === foundDoc.documentId);
+        
+            return {
+                title: foundDoc.title,
+                content: foundDoc.content,
+                documentId: foundDoc.documentId,
+                access: docPermissionObj ? docPermissionObj.access : false 
+            };
+        });
+
+        console.log(sharedDocumentArrayWithPermission);
+        res.status(200).json({ sharedDocumentArrayWithPermission });
     } catch (error) {
+        console.log(error);
         res.status(500).json({ message: 'Internal Server Error' });
     }
 })
@@ -154,7 +184,7 @@ router.get('/:documentId', async (req, res) => {
         const document = await Document.findById(req.params.documentId);
 
         if (!document) {
-            return res.status(404).json({ message: 'Document not found' });
+            res.status(404).json({ message: 'Document not found' });
         }
 
         res.json({ content: document.content });
