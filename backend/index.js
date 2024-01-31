@@ -3,13 +3,39 @@ const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const session = require('express-session');
 const cors = require('cors')
+const http = require('http');
+const WebSocket = require('ws');
 const cookieParser = require('cookie-parser')
+const ShareDB = require('sharedb');
+const richText = require('rich-text');
+const WebSocketJSONStream = require('@teamwork/websocket-json-stream');
+const { Document } = require('./Models/documentModel');
 
 const users = require('./Routes/users')
 const documents = require('./Routes/documents');
 const documentDirectory = require('./Routes/documentDirectory');
 
 const app = express()
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server });
+
+ShareDB.types.register(richText.type);
+var backend = new ShareDB();
+
+wss.on('connection', (ws) => {
+        var connection = backend.connect();
+        var doc = connection.get('documents', 'rich-text');
+        doc.fetch(function(err) {
+            if (err) throw err;
+            if (doc.type === null) {
+                doc.create([{insert: 'hi!'}], 'rich-text');
+            }
+        });
+
+        var stream = new WebSocketJSONStream(ws);
+        backend.listen(stream);
+});
+
 require('dotenv').config()
 
 const MONGO_URL = process.env.MONGO_URL;
@@ -66,4 +92,5 @@ app.get('/',(req,res)=>{
 })
 
 const port = 3001
-app.listen(port , ()=> console.log(`Listening on port ${port}...`))
+// const port = 8080
+server.listen(port , ()=> console.log(`Listening on port ${port}...`))

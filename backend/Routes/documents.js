@@ -113,6 +113,7 @@ router.get('/myDocuments', async (req, res) => {
     try {
         if (!req.session.userId) {
             res.status(401).json({ error: 'Unauthorized' });
+            return;
         }
 
         const email = req.session.email;
@@ -120,6 +121,7 @@ router.get('/myDocuments', async (req, res) => {
 
         if (!user) {
             res.status(400).json({ message: 'User not found!' });
+            return;
         }
 
         var documents = user.documents;
@@ -129,11 +131,14 @@ router.get('/myDocuments', async (req, res) => {
             })
             .catch((error) => {
                 res.status(500).json({ foundDocuments });
+                return;
             });
 
         res.status(200).json({ foundDocuments });
+        return;
     } catch (error) {
         res.status(500).json({ message: 'Internal Server Error' });
+        return;
     }
 });
 
@@ -141,6 +146,7 @@ router.get('/sharedDocuments', async (req, res) => {
     try {
         if (!req.session.userId) {
             res.status(401).json({ error: 'Unauthorized' });
+            return;
         }
 
         const email = req.session.email;
@@ -148,6 +154,7 @@ router.get('/sharedDocuments', async (req, res) => {
 
         if (!user) {
             res.status(400).json({ message: 'User not found!' });
+            return;
         }
 
         const sharedDocumentsIds = user.sharedDocuments.map(document => document.documentId);
@@ -158,6 +165,7 @@ router.get('/sharedDocuments', async (req, res) => {
         })
         .catch((error) => {
             res.status(500).json({ foundDocuments });
+            return;
         });
 
         const sharedDocumentArrayWithPermission = foundDocuments.map(foundDoc => {
@@ -173,6 +181,7 @@ router.get('/sharedDocuments', async (req, res) => {
 
         console.log(sharedDocumentArrayWithPermission);
         res.status(200).json({ sharedDocumentArrayWithPermission });
+        return;
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: 'Internal Server Error' });

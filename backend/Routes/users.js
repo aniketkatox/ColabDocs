@@ -78,14 +78,17 @@ router.post('/logout', (req, res) => {
       if (err) {
         console.error('Error destroying session:', err);
         res.status(500).json({ error: 'Internal Server Error' });
+        return;
       }
 
       // Respond with a success message
       res.status(200).json({ message: 'Logout successful!' });
+      return;
     });
   } catch (error) {
     console.error('Error during logout:', error);
     res.status(500).json({ error: 'Internal Server Error' });
+    return;
   }
 });
 
@@ -96,12 +99,15 @@ router.get('/check-login', async (req, res) => {
       const user = await User.findById({ _id: req.session.userId });
       if (user) {
         res.status(200).json({ isLoggedIn: true, user: user });
+        return;
       }
     }
     res.status(403).json({ isLoggedIn: false });
+    return;
   } catch (error) {
     console.error('Error checking login status:', error);
     res.status(500).json({ error: 'Internal Server Error' });
+    return;
   }
 });
 
