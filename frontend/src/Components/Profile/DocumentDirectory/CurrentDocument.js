@@ -22,8 +22,18 @@ function CurrentDocument({ props }){
 
 		socket.addEventListener('open', (event) => {
 			
+			const dataToSend = {
+				documentId
+			};
+			
+			// Convert the object to a JSON string before sending
+			const jsonString = JSON.stringify(dataToSend);
+			
+			// Send the JSON string to the server
+			socket.send(jsonString);
+			new Promise(resolve => setTimeout(resolve, 3000));
 			var connection = new sharedb.Connection(socket);
-			var doc = connection.get('documents', 'rich-text');
+			var doc = connection.get('documents', documentId);
 
 			doc.subscribe(function(err) {
 				if (err) throw err; 
