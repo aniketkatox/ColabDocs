@@ -3,6 +3,9 @@ const router = express.Router();
 const { Document } = require('../Models/documentModel');
 const { User, userValidation } = require('../Models/userModel');
 const { v4: uuidv4 } = require('uuid');
+const ShareDB = require('sharedb');
+const richText = require('rich-text');
+
 
 function generateGUID() {
     return uuidv4();
@@ -29,6 +32,20 @@ router.post('/create', async (req, res) => {
         });
 
         user.documents.push(newDocument.documentId);
+
+        ShareDB.types.register(richText.type);
+        const db = require('sharedb-mongo')('mongodb://localhost:27017/test');
+        const shareDB = new ShareDB({db});
+        var shareDBConnection = shareDB.connect();
+        var doc = shareDBConnection.get('documents', newDocument.documentId);
+        doc.fetch(function(err) {
+            if (err) throw err;
+            if (doc.type === null) {
+                doc.create([{insert: newDocument.content}], 'rich-text', null);
+                console.log("created doc!")
+                return;
+            }
+        });
 
         await newDocument.save();
         await user.save();
@@ -58,7 +75,6 @@ router.post('/addOwner', async (req, res) => {
             res.status(400).json({ message: 'You already have this doc!' });
         }
 
-        console.log(newUserEmail);
         const newUser = await User.findOne({ email: newUserEmail });
 
         newUser.documents.push(documentId);
@@ -68,7 +84,6 @@ router.post('/addOwner', async (req, res) => {
         res.status(201).json({ message: newUserEmail + ' added to the owners!' });
 
     } catch (error) {
-        console.log(error);
         res.status(500).json({ message: 'Internal Server Error' });
     }
 });
@@ -179,11 +194,9 @@ router.get('/sharedDocuments', async (req, res) => {
             };
         });
 
-        console.log(sharedDocumentArrayWithPermission);
         res.status(200).json({ sharedDocumentArrayWithPermission });
         return;
     } catch (error) {
-        console.log(error);
         res.status(500).json({ message: 'Internal Server Error' });
     }
 })

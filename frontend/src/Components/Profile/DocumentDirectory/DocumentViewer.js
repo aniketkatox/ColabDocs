@@ -7,7 +7,6 @@ function DocumentViewer({ props }){
 
     var currentDocumentProp = {
         document : props.document,
-        documentId : props.document.documentId
     }
 
     var ownerShipManagerProp = {

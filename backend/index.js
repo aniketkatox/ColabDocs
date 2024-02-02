@@ -20,49 +20,16 @@ const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
 ShareDB.types.register(richText.type);
-let documentToShareDBMap = new Map();
+const db = require('sharedb-mongo')('mongodb://localhost:27017/test');
+const shareDB = new ShareDB({db});
 
 wss.on('connection', (ws) => {
 	ws.on('message', (message) => {
 		try{
 			const parsedMessage = JSON.parse(message);
 			if (parsedMessage.hasOwnProperty('documentId')) {
-				const documentId = parsedMessage.documentId;
-				if (documentToShareDBMap.has(documentId)) {
-					console.log("Old Found: ", documentId);
-
-					const shareDB = documentToShareDBMap.get(documentId);
-					const shareDBConnection = shareDB.connect();
-					const doc = shareDBConnection.get('documents', documentId);
-					doc.fetch(function(err) {
-						if (err) throw err;
-						if (doc.type === null) {
-							doc.create([{insert: 'hi!'}], documentId);
-							documentToShareDBMap.set(documentId, shareDB);
-						}
-					});
-	
-					var stream = new WebSocketJSONStream(ws);
-					shareDB.listen(stream);
-				}else{
-				console.log("New DB: ", documentId);
-
-					const shareDB = new ShareDB();
-					const shareDBConnection = shareDB.connect();
-					const doc = shareDBConnection.get('documents', documentId);
-					doc.fetch(function(err) {
-						if (err) throw err;
-						if (doc.type === null) {
-							doc.create([{insert: 'hi!'}], 'rich-text');
-							documentToShareDBMap.set(documentId, shareDB);
-						}
-					});
-	
-					var stream = new WebSocketJSONStream(ws);
-					shareDB.listen(stream);
-				}
-			}else{
-				//console.log(message);
+				var stream = new WebSocketJSONStream(ws);
+				shareDB.listen(stream);
 			}
 		}
 		catch(error){

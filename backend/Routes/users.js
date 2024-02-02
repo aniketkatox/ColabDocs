@@ -57,10 +57,6 @@ router.post('/signin', async (req, res) => {
     req.session.isLoggedIn = true;
     req.session.email = email;
 
-    console.log("watch out", req.session);
-
-    console.log("watch out watch out", req.session.email)
-
     // res.status(200).json({ message: 'Login successful!',user: req.session.user, token: "abcd" });
     res.status(200).json({ message: 'Login successful!',email: req.session.email, token: "abcd" });
   } catch (error) {

@@ -10,7 +10,6 @@ const isLoggedInMiddleware = (req, res, next) => {
     } else {
         // User is not logged in
         // res.status(401).json({ message: 'Unauthorized' });
-        console.log('Unauthorized access, redirecting...');
         res.redirect('/signin');
     }
 };
