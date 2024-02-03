@@ -6,7 +6,8 @@ function DocumentViewer({ props }){
     const document = props.document;
 
     var currentDocumentProp = {
-        document : props.document,
+        backendURI : props.backendURI,
+        document : props.document
     }
 
     var ownerShipManagerProp = {

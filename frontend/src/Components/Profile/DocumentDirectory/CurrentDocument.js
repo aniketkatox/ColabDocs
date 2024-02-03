@@ -5,6 +5,8 @@ import richText from "rich-text";
 import Quill from 'quill';
 
 function CurrentDocument({ props }){
+    const backendURI = props.backendURI.replace(/^http?:\/\//, '');
+    ;
     const title = props.document.title;
     const content = props.document.content;
 	const documentId = props.document.documentId;
@@ -19,7 +21,7 @@ function CurrentDocument({ props }){
 
 	useEffect(() => {
 		if(accessPermission){
-			var socket = new ReconnectingWebSocket('ws://' + 'localhost:3001', [], {
+			var socket = new ReconnectingWebSocket('ws://' + backendURI, [], {
 				maxEnqueuedMessages: 0
 			});
 	
