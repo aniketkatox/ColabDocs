@@ -47,14 +47,21 @@ mongoose.connect(MONGO_URL)
 .then(()=> console.log('Connection is Successful to database'))
 .catch(err=> console.error('Could not connect to mongodb',err))
 
+const allowedOrigins = ['http://localhost:3000', 'http://192.168.0.102:3000'];
 
-app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
-  res.header('Access-Control-Allow-Credentials', true);
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  next();
-});
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
+
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(express.json())
 app.use(cookieParser())
