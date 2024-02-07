@@ -10,7 +10,7 @@ import Profile from "./Profile/Profile";
 export default function Main() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [showSignUpForm, setShowSignUpForm] = useState(false);
-    const backendURI = "http://192.168.0.102:3001";
+    const backendURI = "http://localhost:3001";
 
     function changeIsLoggedIn(isLoggedIn){
         setIsLoggedIn(isLoggedIn);
