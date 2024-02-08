@@ -4,7 +4,6 @@ import DocumentDirectory from "./DocumentDirectory/DocumentDirectory";
 
 function Profile({ props }) {
 
-
     var logOutButtonProp = {
         backendURI : props.backendURI,
         changeIsLoggedIn : props.changeIsLoggedIn

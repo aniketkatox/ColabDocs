@@ -3,8 +3,6 @@ import React, { useState } from 'react';
 import SignUpForm from "./SignUpForm";
 import axios from 'axios';
 import { useEffect } from 'react';
-import LogOutButton from "./Profile/LogOutButton";
-import Documents from "./Profile/DocumentDirectory/Documents";
 import Profile from "./Profile/Profile";
 
 export default function Main() {

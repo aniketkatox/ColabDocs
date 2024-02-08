@@ -1,9 +1,8 @@
 import CreateDocument from "./CreateDocument";
-import CurrentDocument from "./CurrentDocument";
 import DocumentViewer from "./DocumentViewer";
 import MyDocuments from "./MyDocuments";
 import SharedDocuments from "./SharedDocuments";
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 function DocumentDirectory({ props }) {
     const [trigger, setTrigger] = useState(0);

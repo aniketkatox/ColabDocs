@@ -13,7 +13,6 @@ const { Document } = require('./Models/documentModel');
 
 const users = require('./Routes/users')
 const documents = require('./Routes/documents');
-const documentDirectory = require('./Routes/documentDirectory');
 
 const app = express()
 const server = http.createServer(app);
@@ -93,8 +92,6 @@ app.use(
 
 app.use('/users',users)
 app.use('/documents', documents);
-app.use('/',documentDirectory);
-
 
 app.get('/',(req,res)=>{
     res.json({hii: "hii my self aniket"});
