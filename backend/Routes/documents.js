@@ -15,12 +15,14 @@ router.post('/create', async (req, res) => {
     try {
         if (!req.session.userId) {
             res.status(401).json({ message: 'Unauthorized' });
+            return;
         }
         const email = req.session.email;
         const user = await User.findOne({ email });
 
         if (!user) {
             res.status(400).json({ message: 'User not found!' });
+            return;
         }
 
         const { title, content } = req.body;
@@ -51,8 +53,10 @@ router.post('/create', async (req, res) => {
         await user.save();
 
         res.status(201).json({ message: 'Document created successfully!', document: newDocument.documentId });
+        return;
     } catch (error) {
         res.status(500).json({ message: 'Internal Server Error' });
+        return;
     }
 });
 
@@ -60,6 +64,7 @@ router.post('/addOwner', async (req, res) => {
     try {
         if (!req.session.userId) {
             res.status(401).json({ message: 'Unauthorized' });
+            return;
         }
 
         const email = req.session.email;
@@ -67,12 +72,14 @@ router.post('/addOwner', async (req, res) => {
 
         if (!user) {
             res.status(400).json({ message: 'User not found!' });
+            return;
         }
 
         const { newUserEmail, documentId } = req.body;
 
         if(newUserEmail === email){
             res.status(400).json({ message: 'You already have this doc!' });
+            return;
         }
 
         const newUser = await User.findOne({ email: newUserEmail });
@@ -82,9 +89,10 @@ router.post('/addOwner', async (req, res) => {
         await newUser.save();
 
         res.status(201).json({ message: newUserEmail + ' added to the owners!' });
-
+        return;
     } catch (error) {
         res.status(500).json({ message: 'Internal Server Error' });
+        return;
     }
 });
 
@@ -92,6 +100,7 @@ router.post('/giveAccess', async (req, res) => {
     try {
         if (!req.session.userId) {
             res.status(401).json({ message: 'Unauthorized' });
+            return;
         }
 
         const email = req.session.email;
@@ -99,6 +108,7 @@ router.post('/giveAccess', async (req, res) => {
 
         if (!user) {
             res.status(400).json({ message: 'User not found!' });
+            return;
         }
 
         const { newUserEmail, documentId, access } = req.body;
@@ -119,8 +129,10 @@ router.post('/giveAccess', async (req, res) => {
         await newUser.save();
 
         res.status(201).json({ message: newUserEmail + ' Access given !' });
+        return;
     } catch (error) {
         res.status(500).json({ message: 'Internal Server Error' });
+        return;
     }
 });
 
@@ -198,6 +210,7 @@ router.get('/sharedDocuments', async (req, res) => {
         return;
     } catch (error) {
         res.status(500).json({ message: 'Internal Server Error' });
+        return;
     }
 })
 
@@ -207,12 +220,15 @@ router.get('/:documentId', async (req, res) => {
 
         if (!document) {
             res.status(404).json({ message: 'Document not found' });
+            return;
         }
 
         res.json({ content: document.content });
+        return;
     } catch (error) {
         console.error('Error fetching document content:', error);
         res.status(500).json({ error: 'Internal Server Error' });
+        return;
     }
 });
 

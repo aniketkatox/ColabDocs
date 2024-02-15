@@ -12,6 +12,7 @@ router.post('/signup', async (req, res) => {
 		const { error } = userValidation.validate(req.body);
 		if (error) {
 			res.status(400).json({ message: error.details[0].message });
+      return;
 		}
 
 		const { username, email, password } = req.body;
@@ -19,6 +20,7 @@ router.post('/signup', async (req, res) => {
 		
 		if (existingUser) {
 			res.status(400).json({ message: 'User with this email already exists' });
+      return;
 		}
 
 		const hashedPassword = await bcrypt.hash(password, 10);
@@ -31,10 +33,11 @@ router.post('/signup', async (req, res) => {
 
 		await newUser.save();
 		res.status(201).json({ message: 'User registered successfully!'});
-
+    return;
 	} catch (error) {
 		console.error('Error registering user:', error);
 		res.status(500).json({ message: 'Internal Server Error' });
+    return;
 	}
 });
 
@@ -45,12 +48,14 @@ router.post('/signin', async (req, res) => {
     const user = await User.findOne({ email });
     if (!user || typeof user !== 'object') {
       res.status(401).json({ message: 'Invalid email or password' });
+      return;
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
       res.status(401).json({ message: 'Invalid email or password' });
+      return;
     }
 
     req.session.userId = user._id.toString();
@@ -59,9 +64,11 @@ router.post('/signin', async (req, res) => {
 
     // res.status(200).json({ message: 'Login successful!',user: req.session.user, token: "abcd" });
     res.status(200).json({ message: 'Login successful!',email: req.session.email, token: "abcd" });
+    return;
   } catch (error) {
     console.error('Error during login:', error);
     res.status(500).json({ error: 'Internal Server Error' });
+    return;
   }
 });
 
