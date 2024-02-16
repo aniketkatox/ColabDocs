@@ -31,7 +31,7 @@ The Collaborative Document Editor is a feature-rich, desktop application designe
 
 * Node.js: Manages server-side logic and backend operations.
 * Express.js: Builds RESTful API endpoints for communication between frontend and backend.
-* Sharedb: Enables real-time synchronization of document data for collaboration.
+* WebSocket (via Sharedb): Facilitates real-time communication and synchronization between clients and the server for collaborative editing.
 
 #### Database
 
