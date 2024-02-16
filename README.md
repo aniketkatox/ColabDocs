@@ -22,6 +22,9 @@ The Collaborative Document Editor is a feature-rich, web application designed to
 
 ### Architecture Overview
 
+![x](https://github.com/aniketkatox/ColabDocs/assets/114221120/cb852ece-e324-4c6a-9345-374d164e3f86)
+
+
 #### Frontend
 
 * React.js: Powers the frontend for building user interfaces.
@@ -31,7 +34,8 @@ The Collaborative Document Editor is a feature-rich, web application designed to
 
 * Node.js: Manages server-side logic and backend operations.
 * Express.js: Builds RESTful API endpoints for communication between frontend and backend.
-* WebSocket (via Sharedb): Facilitates real-time communication and synchronization between clients and the server for collaborative editing.
+* WebSocket: Facilitates real-time communication and synchronization between clients and the server for collaborative editing.
+* shareDB: For conflict resolution.
 
 #### Database
 
