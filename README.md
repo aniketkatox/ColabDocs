@@ -18,7 +18,7 @@ node index.js
 
 ## Overview
 
-The Collaborative Document Editor is a feature-rich, desktop application designed to facilitate seamless collaboration on documents. With its intuitive interface and powerful capabilities, users can effortlessly create, view, edit, and share documents in real-time.
+The Collaborative Document Editor is a feature-rich, web application designed to facilitate seamless collaboration on documents. With its intuitive interface and powerful capabilities, users can effortlessly create, view, edit, and share documents in real-time.
 
 ### Architecture Overview
 
@@ -67,4 +67,4 @@ https://github.com/aniketkatox/ColabDocs/assets/114221120/797ea04f-6eff-4c36-992
 * Nodejs  
 * Express  
 * MongoDB  
-* Socket.io  
+* webSocket  
