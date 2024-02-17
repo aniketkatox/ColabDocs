@@ -7,7 +7,7 @@ npm install
 npm start
 ```
 
-Then you will need to run your backend server. This can be hosted or thorugh your local host. To do this, switch into this directory and run node server.js. This will run your server locally and you will be able to save/access any changes.
+Then you will need to run your backend server. This can be hosted through your local host. To do this, switch into this directory and run node server.js. This will run your server locally and you will be able to save/access any changes.
 
 To run the backend server, run this command:
 
